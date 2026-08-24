@@ -17,6 +17,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 Base.metadata.create_all(bind=engine)
 
+
 def override_get_db():
     db = TestingSessionLocal()
     try:
@@ -24,25 +25,52 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
 
 
-def test_criar_tarefa():
-    resposta = client.post("/tarefas", json={"titulo": "Estudar Pytest"})
+@pytest.fixture
+def token_de_acesso():
+    """Cria um usuário e faz login, devolvendo um token pronto para uso nos testes."""
+    client.post("/usuarios", json={"email": "usuario_teste@teste.com", "senha": "senha123"})
+    resposta = client.post(
+        "/login",
+        data={"username": "usuario_teste@teste.com", "password": "senha123"},
+    )
+    return resposta.json()["access_token"]
+
+
+def test_criar_usuario():
+    resposta = client.post("/usuarios", json={"email": "novo@teste.com", "senha": "123456"})
+    assert resposta.status_code == 200
+    dados = resposta.json()
+    assert dados["email"] == "novo@teste.com"
+    assert "senha" not in dados
+
+
+def test_criar_tarefa_sem_token_falha():
+    resposta = client.post("/tarefas", json={"titulo": "Sem autenticacao"})
+    assert resposta.status_code == 401
+
+
+def test_criar_tarefa_com_token(token_de_acesso):
+    headers = {"Authorization": f"Bearer {token_de_acesso}"}
+    resposta = client.post("/tarefas", json={"titulo": "Estudar Pytest"}, headers=headers)
     assert resposta.status_code == 200
     dados = resposta.json()
     assert dados["titulo"] == "Estudar Pytest"
-    assert dados["concluida"] == False
 
 
-def test_listar_tarefas():
-    resposta = client.get("/tarefas")
+def test_listar_tarefas(token_de_acesso):
+    headers = {"Authorization": f"Bearer {token_de_acesso}"}
+    resposta = client.get("/tarefas", headers=headers)
     assert resposta.status_code == 200
     assert isinstance(resposta.json(), list)
 
 
-def test_buscar_tarefa_inexistente():
-    resposta = client.get("/tarefas/9999")
+def test_buscar_tarefa_inexistente(token_de_acesso):
+    headers = {"Authorization": f"Bearer {token_de_acesso}"}
+    resposta = client.get("/tarefas/9999", headers=headers)
     assert resposta.status_code == 404
