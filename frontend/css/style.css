@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --cor-fundo: #14181F;
+  --cor-superficie: #1C222D;
+  --cor-borda: #2A3140;
+  --cor-texto: #ECEDF1;
+  --cor-texto-secundario: #8B92A4;
+  --cor-acento: #E8A33D;
+  --cor-concluida: #4C9F94;
+  --cor-erro: #D9695F;
+
+  --fonte-titulo: 'Newsreader', serif;
+  --fonte-corpo: 'IBM Plex Sans', sans-serif;
+  --fonte-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--fonte-titulo);
+  font-weight: 500;
+}
+
+/* ===== Tela de autenticação (duas colunas) ===== */
+
+.tela-auth {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* --- Coluna esquerda: painel de marca animado --- */
+
+.painel-marca {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #10141B;
+  border-right: 1px solid var(--cor-borda);
+}
+
+.grade-marca {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--cor-borda) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cor-borda) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.25;
+  mask-image: radial-gradient(circle at center, black, transparent 75%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: flutuar 14s ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 380px;
+  height: 380px;
+  background: var(--cor-acento);
+  top: -80px;
+  left: -100px;
+}
+
+.blob-2 {
+  width: 320px;
+  height: 320px;
+  background: var(--cor-concluida);
+  bottom: -100px;
+  right: -80px;
+  animation-delay: -7s;
+}
+
+@keyframes flutuar {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.08); }
+}
+
+.conteudo-marca {
+  position: relative;
+  z-index: 1;
+  max-width: 380px;
+  padding: 40px;
+  animation: entrarBaixo 0.7s ease-out;
+}
+
+.selo-marca {
+  display: inline-block;
+  font-family: var(--fonte-mono);
+  font-size: 0.80rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cor-texto-secundario);
+  border: 1px solid var(--cor-borda);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+}
+
+.titulo-marca {
+  font-size: 5rem;
+  font-style: italic;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.frase-marca {
+  color: var(--cor-texto-secundario);
+  font-size: 1.05rem;
+}
+
+/* --- Coluna direita: formulário --- */
+
+.painel-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.cartao-auth {
+  width: 100%;
+  max-width: 380px;
+  animation: entrarBaixo 0.7s ease-out 0.1s backwards;
+}
+
+@keyframes entrarBaixo {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.abas-auth {
+  display: flex;
+  gap: 4px;
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.aba-btn {
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--cor-texto-secundario);
+  font-family: var(--fonte-corpo);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.aba-btn.ativa {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+.formulario-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formulario-auth.escondido {
+  display: none;
+}
+
+.formulario-auth label {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+  margin-top: 12px;
+  animation: entrarBaixo 0.5s ease-out backwards;
+}
+
+.formulario-auth input {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--cor-texto);
+  font-family: var(--fonte-corpo);
+  font-size: 0.95rem;
+  transition: border-color 0.15s;
+}
+
+.formulario-auth input:focus {
+  outline: none;
+  border-color: var(--cor-acento);
+}
+
+.botao-principal {
+  margin-top: 20px;
+  padding: 11px;
+  background-color: var(--cor-acento);
+  color: var(--cor-fundo);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--fonte-corpo);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.botao-principal:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.mensagem-erro {
+  color: var(--cor-erro);
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
+
+/* Respeita usuários que preferem menos movimento na tela */
+@media (prefers-reduced-motion: reduce) {
+  .blob, .conteudo-marca, .cartao-auth, .formulario-auth label {
+    animation: none;
+  }
+}
+
+/* Em telas estreitas, empilha as colunas em vez de lado a lado */
+@media (max-width: 860px) {
+  .tela-auth {
+    flex-direction: column;
+  }
+  .painel-marca {
+    min-height: 240px;
+    border-right: none;
+    border-bottom: 1px solid var(--cor-borda);
+  }
+}

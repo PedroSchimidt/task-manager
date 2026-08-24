@@ -8,10 +8,20 @@ import schemas
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import auth
 
-# Cria as tabelas no banco (se ainda não existirem)
+# Cria as tabelas no banco 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Fornece uma sessão do banco pra cada requisição, e garante que ela é fechada depois
 def get_db():

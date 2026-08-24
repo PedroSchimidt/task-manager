@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskly — Task Manager</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="tela-auth">
+    <section class="painel-marca">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="grade-marca"></div>
+
+      <div class="conteudo-marca">
+        <span class="selo-marca">Task Manager</span>
+        <h1 class="titulo-marca">Taskly</h1>
+        <p class="frase-marca">O ritmo certo para cada tarefa encontrar seu lugar.</p>
+      </div>
+    </section>
+
+    <section class="painel-form">
+      <div class="cartao-auth">
+        <div class="abas-auth">
+          <button class="aba-btn ativa" data-aba="entrar">Entrar</button>
+          <button class="aba-btn" data-aba="cadastrar">Criar conta</button>
+        </div>
+
+        <form id="form-entrar" class="formulario-auth">
+          <label for="entrar-email">Email</label>
+          <input type="email" id="entrar-email" required placeholder="voce@email.com">
+
+          <label for="entrar-senha">Senha</label>
+          <input type="password" id="entrar-senha" required placeholder="••••••••">
+
+          <p id="erro-entrar" class="mensagem-erro"></p>
+
+          <button type="submit" class="botao-principal">Entrar</button>
+        </form>
+
+        <form id="form-cadastrar" class="formulario-auth escondido">
+          <label for="cadastrar-email">Email</label>
+          <input type="email" id="cadastrar-email" required placeholder="voce@email.com">
+
+          <label for="cadastrar-senha">Senha</label>
+          <input type="password" id="cadastrar-senha" required placeholder="••••••••">
+
+          <p id="erro-cadastrar" class="mensagem-erro"></p>
+
+          <button type="submit" class="botao-principal">Criar conta</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
