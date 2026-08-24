@@ -1,0 +1,1 @@
+# Este arquivo permite que o pytest encontre os módulos na raiz do projeto
