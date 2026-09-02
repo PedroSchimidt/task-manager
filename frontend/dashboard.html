@@ -99,10 +99,10 @@
         <input type="hidden" id="tarefa-id">
 
         <label for="tarefa-titulo">Título</label>
-        <input type="text" id="tarefa-titulo" required placeholder="Ex: Revisar proposta do cliente">
+        <input type="text" id="tarefa-titulo" name="tarefa-titulo-nao-autocompletar" autocomplete="off" required placeholder="Ex: Revisar proposta do cliente">
 
         <label for="tarefa-descricao">Descrição</label>
-        <textarea id="tarefa-descricao" rows="3" placeholder="Detalhes (opcional)"></textarea>
+        <textarea id="tarefa-descricao" name="tarefa-descricao-nao-autocompletar" autocomplete="off" rows="3" placeholder="Detalhes (opcional)"></textarea>
 
         <div class="modal-acoes">
           <button type="button" class="botao-secundario" id="botao-cancelar-modal">Cancelar</button>
