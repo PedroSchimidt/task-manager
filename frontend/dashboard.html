@@ -46,6 +46,7 @@
           <h1 class="titulo-pagina" id="titulo-pagina">Todas as tarefas</h1>
           <p class="subtitulo-pagina" id="subtitulo-pagina">Carregando suas tarefas...</p>
         </div>
+        
         <button class="botao-nova-tarefa" id="botao-abrir-modal">
           <svg viewBox="0 0 16 16" fill="none"><path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           Nova tarefa
@@ -62,7 +63,10 @@
 
     <aside class="painel-resumo">
       <div class="resumo-blob"></div>
-
+      <button class="botao-tema" id="botao-tema" aria-label="Alternar tema">
+          <svg class="icone-lua" viewBox="0 0 20 20" fill="none"><path d="M17.5 10.5C16.5 13.5 13.8 15.5 10.5 15.5C6.6 15.5 3.5 12.4 3.5 8.5C3.5 5.2 5.5 2.5 8.5 1.5C7.7 3 7.3 4.7 7.5 6.5C8 10.5 11.5 13.2 15.5 12.7C16.3 12.6 17 12.3 17.5 10.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          <svg class="icone-sol" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.5 4.5L14 6M6 14L4.5 15.5M15.5 15.5L14 14M6 6L4.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
       <div class="cartao-progresso">
         <div class="anel-progresso" id="anel-progresso">
           <span class="anel-porcentagem" id="anel-porcentagem">0%</span>
@@ -127,6 +131,7 @@
     </div>
   </div>
 
+  <script src="js/theme.js"></script>
   <script src="js/api.js"></script>
   <script src="js/app.js"></script>
 </body>
