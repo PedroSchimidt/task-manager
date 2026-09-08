@@ -4,7 +4,8 @@ class TarefaBase(BaseModel):
     titulo: str
     descricao: str = ""
     concluida: bool = False
-
+    prioridade: str = "media"
+    data_vencimento: str | None = None
 class TarefaCriar(TarefaBase):
     pass
 

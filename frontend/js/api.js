@@ -56,20 +56,31 @@ async function listarTarefas() {
   return await resposta.json();
 }
 
-async function criarTarefa(titulo, descricao) {
+async function criarTarefa(titulo, descricao, prioridade, dataVencimento) {
   const resposta = await fetch(`${API_URL}/tarefas`, {
     method: "POST",
     headers: obterCabecalhosAutenticados(),
-    body: JSON.stringify({ titulo, descricao }),
+    body: JSON.stringify({
+      titulo,
+      descricao,
+      prioridade,
+      data_vencimento: dataVencimento || null,
+    }),
   });
   return await resposta.json();
 }
 
-async function atualizarTarefa(id, titulo, descricao, concluida) {
+async function atualizarTarefa(id, titulo, descricao, concluida, prioridade, dataVencimento) {
   const resposta = await fetch(`${API_URL}/tarefas/${id}`, {
     method: "PUT",
     headers: obterCabecalhosAutenticados(),
-    body: JSON.stringify({ titulo, descricao, concluida }),
+    body: JSON.stringify({
+      titulo,
+      descricao,
+      concluida,
+      prioridade,
+      data_vencimento: dataVencimento || null,
+    }),
   });
   return await resposta.json();
 }

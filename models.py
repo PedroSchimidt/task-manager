@@ -19,6 +19,8 @@ class TarefaModel(Base):
     titulo = Column(String, nullable=False)
     descricao = Column(String, default="")
     concluida = Column(Boolean, default=False)
+    prioridade = Column(String, default="media")
+    data_vencimento = Column(String, nullable=True)
     dono_id = Column(Integer, ForeignKey("usuarios.id"))
 
     dono = relationship("UsuarioModel", back_populates="tarefas")

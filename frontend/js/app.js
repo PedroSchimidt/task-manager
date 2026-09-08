@@ -23,9 +23,35 @@ const formTarefaEl = document.getElementById("form-tarefa");
 const tarefaIdEl = document.getElementById("tarefa-id");
 const tarefaTituloEl = document.getElementById("tarefa-titulo");
 const tarefaDescricaoEl = document.getElementById("tarefa-descricao");
+const tarefaPrioridadeEl = document.getElementById("tarefa-prioridade");
+const tarefaVencimentoEl = document.getElementById("tarefa-vencimento");
+const campoBuscaEl = document.getElementById("campo-busca");
+const containerToastsEl = document.getElementById("container-toasts");
 
 let todasAsTarefas = [];
 let filtroAtual = "todas";
+let termoBusca = "";
+
+
+function mostrarToast(mensagem, tipo = "sucesso") {
+  const toast = document.createElement("div");
+  toast.className = `toast ${tipo}`;
+
+  const iconeSucesso = `<svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2L4.6 8.8L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const iconeErro = `<svg viewBox="0 0 12 12" fill="none"><path d="M3 3L9 9M9 3L3 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+
+  toast.innerHTML = `
+    <span class="toast-icone">${tipo === "sucesso" ? iconeSucesso : iconeErro}</span>
+    <span>${mensagem}</span>
+  `;
+
+  containerToastsEl.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add("saindo");
+    setTimeout(() => toast.remove(), 200);
+  }, 3000);
+}
 
 // ===== Carregar dados iniciais =====
 
@@ -71,6 +97,12 @@ function renderizarTarefas() {
   if (filtroAtual === "pendentes") tarefasFiltradas = pendentes;
   if (filtroAtual === "concluidas") tarefasFiltradas = concluidas;
 
+  if (termoBusca) {
+    tarefasFiltradas = tarefasFiltradas.filter((t) =>
+      t.titulo.toLowerCase().includes(termoBusca.toLowerCase())
+    );
+  }
+
   listaTarefasEl.innerHTML = "";
 
   if (tarefasFiltradas.length === 0) {
@@ -87,6 +119,11 @@ function renderizarTarefas() {
     cartao.className = "cartao-tarefa" + (tarefa.concluida ? " concluida" : "");
     cartao.style.animationDelay = `${indice * 0.04}s`;
 
+        
+    const rotulosPrioridade = { baixa: "Baixa", media: "Média", alta: "Alta" };
+    const hoje = new Date().toISOString().split("T")[0];
+    const estaAtrasada = tarefa.data_vencimento && tarefa.data_vencimento < hoje && !tarefa.concluida;
+
     cartao.innerHTML = `
       <button class="check-tarefa" data-id="${tarefa.id}" aria-label="Marcar como concluída">
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2L4.6 8.8L10 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -94,7 +131,17 @@ function renderizarTarefas() {
       <div class="corpo-tarefa">
         <span class="titulo-tarefa">${tarefa.titulo}<span class="risco-conclusao"></span></span>
         ${tarefa.descricao ? `<p class="descricao-tarefa">${tarefa.descricao}</p>` : ""}
+        <div class="meta-tarefa">
+          <span class="badge-prioridade ${tarefa.prioridade}">${rotulosPrioridade[tarefa.prioridade] || "Média"}</span>
+          ${tarefa.data_vencimento ? `
+            <span class="badge-vencimento ${estaAtrasada ? "atrasada" : ""}">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1.5" y="2.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 5.5H12.5M4.5 1.5V3.5M9.5 1.5V3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              ${formatarData(tarefa.data_vencimento)}
+            </span>
+          ` : ""}
+        </div>
       </div>
+
       <div class="acoes-tarefa">
         <button class="botao-icone editar" data-id="${tarefa.id}" aria-label="Editar">
           <svg viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
@@ -104,6 +151,11 @@ function renderizarTarefas() {
         </button>
       </div>
     `;
+
+    function formatarData(dataISO) {
+  const [ano, mes, dia] = dataISO.split("-");
+  return `${dia}/${mes}`;
+}
 
     listaTarefasEl.appendChild(cartao);
   });
@@ -167,7 +219,7 @@ listaTarefasEl.addEventListener("click", async (evento) => {
   if (botaoCheck) {
     const id = botaoCheck.dataset.id;
     const tarefa = todasAsTarefas.find((t) => t.id == id);
-    await atualizarTarefa(id, tarefa.titulo, tarefa.descricao, !tarefa.concluida);
+    await atualizarTarefa(id, tarefa.titulo, tarefa.descricao, !tarefa.concluida, tarefa.prioridade, tarefa.data_vencimento);
     await carregarTarefas();
   }
 
@@ -186,6 +238,7 @@ listaTarefasEl.addEventListener("click", async (evento) => {
     );
     if (confirmado) {
       await deletarTarefa(id);
+      mostrarToast("Tarefa excluída");
       await carregarTarefas();
     }
   }
@@ -199,10 +252,13 @@ function abrirModal(tarefa = null) {
     tarefaIdEl.value = tarefa.id;
     tarefaTituloEl.value = tarefa.titulo;
     tarefaDescricaoEl.value = tarefa.descricao || "";
+    tarefaPrioridadeEl.value = tarefa.prioridade || "media";
+    tarefaVencimentoEl.value = tarefa.data_vencimento || "";
   } else {
     modalTituloEl.textContent = "Nova tarefa";
     formTarefaEl.reset();
     tarefaIdEl.value = "";
+    tarefaPrioridadeEl.value = "media";
   }
   modalFundoEl.classList.remove("escondido");
   tarefaTituloEl.focus();
@@ -224,16 +280,23 @@ formTarefaEl.addEventListener("submit", async (evento) => {
   const id = tarefaIdEl.value;
   const titulo = tarefaTituloEl.value;
   const descricao = tarefaDescricaoEl.value;
+  const prioridade = tarefaPrioridadeEl.value;
+  const vencimento = tarefaVencimentoEl.value;
 
-  if (id) {
-    const tarefaAtual = todasAsTarefas.find((t) => t.id == id);
-    await atualizarTarefa(id, titulo, descricao, tarefaAtual.concluida);
-  } else {
-    await criarTarefa(titulo, descricao);
+  try {
+    if (id) {
+      const tarefaAtual = todasAsTarefas.find((t) => t.id == id);
+      await atualizarTarefa(id, titulo, descricao, tarefaAtual.concluida, prioridade, vencimento);
+      mostrarToast("Tarefa atualizada com sucesso");
+    } else {
+      await criarTarefa(titulo, descricao, prioridade, vencimento);
+      mostrarToast("Tarefa criada com sucesso");
+    }
+    fecharModal();
+    await carregarTarefas();
+  } catch (erro) {
+    mostrarToast("Não foi possível salvar a tarefa", "erro");
   }
-
-  fecharModal();
-  await carregarTarefas();
 });
 
 // ===== Logout =====
@@ -249,6 +312,38 @@ document.getElementById("botao-sair").addEventListener("click", async () => {
     window.location.href = "index.html";
   }
 });
+
+// ===== Busca em tempo real =====
+
+campoBuscaEl.addEventListener("input", () => {
+  termoBusca = campoBuscaEl.value;
+  renderizarTarefas();
+});
+
+// ===== Atalhos de teclado =====
+
+document.addEventListener("keydown", (evento) => {
+  const modalAberto = !modalFundoEl.classList.contains("escondido");
+  const confirmacaoAberta = !document.getElementById("modal-confirmacao").classList.contains("escondido");
+  const digitandoEmCampo = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName);
+
+  if (evento.key === "/" && !digitandoEmCampo) {
+    evento.preventDefault();
+    campoBuscaEl.focus();
+  }
+
+  if (evento.key === "n" && !digitandoEmCampo && !modalAberto) {
+    evento.preventDefault();
+    abrirModal();
+  }
+
+  if (evento.key === "Escape") {
+    if (modalAberto) fecharModal();
+    if (confirmacaoAberta) document.getElementById("botao-cancelar-confirmacao").click();
+  }
+});
+
+
 // ===== Inicialização =====
 
 carregarUsuario();
