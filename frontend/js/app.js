@@ -55,7 +55,27 @@ function mostrarToast(mensagem, tipo = "sucesso") {
 
 // ===== Carregar dados iniciais =====
 
+function mostrarSkeletons() {
+  listaTarefasEl.innerHTML = "";
+  estadoVazioEl.classList.add("escondido");
+  listaTarefasEl.classList.remove("escondido");
+
+  for (let i = 0; i < 4; i++) {
+    const skeleton = document.createElement("div");
+    skeleton.className = "skeleton-cartao";
+    skeleton.innerHTML = `
+      <div class="skeleton-bloco skeleton-check"></div>
+      <div class="skeleton-linhas">
+        <div class="skeleton-bloco skeleton-titulo"></div>
+        <div class="skeleton-bloco skeleton-desc"></div>
+      </div>
+    `;
+    listaTarefasEl.appendChild(skeleton);
+  }
+}
+
 async function carregarTarefas() {
+  mostrarSkeletons();
   try {
     todasAsTarefas = await listarTarefas();
     renderizarTarefas();
@@ -282,6 +302,11 @@ formTarefaEl.addEventListener("submit", async (evento) => {
   const descricao = tarefaDescricaoEl.value;
   const prioridade = tarefaPrioridadeEl.value;
   const vencimento = tarefaVencimentoEl.value;
+  const botaoSalvar = document.getElementById("botao-salvar-tarefa");
+  const textoOriginalBotao = botaoSalvar.innerHTML;
+
+  botaoSalvar.disabled = true;
+  botaoSalvar.innerHTML = `<span class="spinner"></span>`;
 
   try {
     if (id) {
@@ -296,6 +321,9 @@ formTarefaEl.addEventListener("submit", async (evento) => {
     await carregarTarefas();
   } catch (erro) {
     mostrarToast("Não foi possível salvar a tarefa", "erro");
+  } finally {
+    botaoSalvar.disabled = false;
+    botaoSalvar.innerHTML = textoOriginalBotao;
   }
 });
 
