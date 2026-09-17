@@ -91,3 +91,10 @@ async function deletarTarefa(id) {
     headers: obterCabecalhosAutenticados(),
   });
 }
+
+async function obterSugestoes() {
+  const resposta = await fetch(`${API_URL}/sugestoes`, {
+    headers: obterCabecalhosAutenticados(),
+  });
+  return await resposta.json();
+}

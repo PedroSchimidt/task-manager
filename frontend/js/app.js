@@ -372,7 +372,52 @@ document.addEventListener("keydown", (evento) => {
 });
 
 
+// ===== Aba sugestões de tarefas =====
+
+async function carregarSugestoes() {
+  const listaSugestoesEl = document.getElementById("lista-sugestoes");
+  try {
+    const sugestoes = await obterSugestoes();
+
+    if (sugestoes.length === 0) {
+      listaSugestoesEl.innerHTML = `<p class="sem-sugestoes">Sem sugestões novas por agora.</p>`;
+      return;
+    }
+
+    listaSugestoesEl.innerHTML = sugestoes.map((s) => `
+      <div class="item-sugestao">
+        <span class="texto-sugestao">${s.titulo}</span>
+        <button class="botao-add-sugestao" data-titulo="${s.titulo}">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    `).join("");
+  } catch (erro) {
+    listaSugestoesEl.innerHTML = `<p class="sem-sugestoes">Não foi possível carregar sugestões.</p>`;
+  }
+}
+
+document.getElementById("lista-sugestoes").addEventListener("click", async (evento) => {
+  const botao = evento.target.closest(".botao-add-sugestao");
+  if (!botao) return;
+
+  const titulo = botao.dataset.titulo;
+  botao.disabled = true;
+
+  try {
+    await criarTarefa(titulo, "", "media", "");
+    mostrarToast("Tarefa adicionada a partir da sugestão");
+    await carregarTarefas();
+    await carregarSugestoes();
+  } catch (erro) {
+    mostrarToast("Não foi possível adicionar a tarefa", "erro");
+    botao.disabled = false;
+  }
+});
+
+
 // ===== Inicialização =====
 
 carregarUsuario();
 carregarTarefas();
+carregarSugestoes();
