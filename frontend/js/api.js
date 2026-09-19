@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://task-manager-api-9tvh.onrender.com";
 
 async function cadastrarUsuario(email, senha) {
   const resposta = await fetch(`${API_URL}/usuarios`, {
