@@ -2,7 +2,7 @@
 
 Aplicação full-stack de gerenciamento de tarefas, construída para praticar e demonstrar conceitos usados no mercado: API REST com autenticação, banco de dados relacional, testes automatizados e um frontend completo consumindo tudo isso em tempo real.
 
-🔗 **[Acesse a aplicação ao vivo](gerenciador-de-tarefas-zeta-ecru-68.vercel.app)**
+🔗 **[Acesse a aplicação ao vivo](https://task-manager-git-main-pedroschimidts-projects.vercel.app/)**
 📘 **[Documentação interativa da API (Swagger)](https://task-manager-api-9tvh.onrender.com/docs)**
 
 > ⚠️ O backend está hospedado no plano gratuito do Render, que "dorme" após um período de inatividade. A primeira requisição pode levar até 1 minuto para responder enquanto o servidor reinicia.
